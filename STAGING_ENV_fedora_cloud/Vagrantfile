@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+	config.vm.boot_timeout = 50; # default(300)
+	config.vm.box_check_update = true; # default(true)
+
+	config.vm.define "STAGING-Host-FedoraCloud" do |staging|
+		staging.vm.provider "virtualbox" do |vb|
+			vb.memory = "2048"
+			vb.cpus = "2"
+			vb.name = "02.STAGING-Host-FedoraCloud"
+		end
+
+		# The vagrant-box is from a local vagrant repo box
+		staging.vm.box = "Fedora-Cloud-Base-Vagrant-39-1.5"
+		staging.vm.hostname = "STAGING-Host-FedoraCloud"
+		staging.vm.network :forwarded_port, id: "ssh", guest: 22, host: 2101, auto_correct: true
+
+		staging.vm.network "private_network", ip:"192.168.56.51"
+		staging.vm.network :forwarded_port, guest: 8080, host:8211, auto_correct: true
+
+		staging.vm.synced_folder "vagrant/", "/vagrant", SharedFoldersEnableSymlinksCreate: false
+
+		staging.vm.provision "initialize-staging", type: "shell", privileged: true, path: "vagrant/provision/init-FedoraCloud-39-staging.sh"
+
+	end
+end

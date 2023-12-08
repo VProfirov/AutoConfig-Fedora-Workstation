@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+
+	config.vm.boot_timeout = 50; #default(300)
+	config.vm.box_check_update = true; #default(true)
+
+	#config.vm.box_download_{,,...} checksums for the downloaded update-content
+
+	config.vm.define "STAGING-Host-ArchLinux" do |staging|
+		staging.vm.provider "virtualbox" do |vb|
+			vb.memory = "2048"
+			vb.cpus = "2"
+			vb.name = "01.STAGING-Host-ArchLinux"
+		end
+
+		staging.vm.box = "archlinux/archlinux"
+
+		staging.vm.hostname = "STAGING-Host-ArchLinux"
+
+
+		staging.vm.network :forwarded_port, id: "ssh", guest: 22, host: 2100, auto_correct: true
+
+		# NOTE: DEFAULT NETWORK RANGES:
+		# NOTE:  Ranges: 192.168.56.0/21
+		staging.vm.network "private_network", ip:"192.168.56.50"
+
+		staging.vm.network :forwarded_port, guest: 8080, host:8210, auto_correct: true
+
+		staging.vm.synced_folder "vagrant/", "/vagrant", SharedFoldersEnableSymlinksCreate: false
+
+		staging.vm.provision "initialize-staging", type: "shell", privileged:true, path:"vagrant/provision/init-Archlinux-staging.sh"
+	end
+end
