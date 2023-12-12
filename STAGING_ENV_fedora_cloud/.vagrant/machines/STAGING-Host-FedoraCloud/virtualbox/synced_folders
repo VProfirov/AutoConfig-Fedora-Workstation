@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/vas/Documents/GitHub/AutoConfig-Fedora-Workstation/STAGING_ENV_fedora_cloud/vagrant","disabled":false,"SharedFoldersEnableSymlinksCreate":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
